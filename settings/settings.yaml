@@ -1,3 +1,3 @@
 defaults:
-  - model: BERT
+  - model: AE
   - data: MNIST
