@@ -1,4 +1,20 @@
-name: BERT
+name: AE
+
+encoder:
+  width: 28
+  height: 28
+  output_size: 3
+
+hidden_size: 128
+
+decoder:
+  width: 28
+  height: 28
+  input_size: 3
+
 predictions:
   dir: ../resource/
   name: preds
+
+lr: 5e-2
+weight_decay: 1e-2
