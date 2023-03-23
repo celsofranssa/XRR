@@ -10,7 +10,7 @@ def fit(params):
     fit_helper.perform_fit()
 
 
-@hydra.main(config_path="settings/", config_name="settings.yaml")
+@hydra.main(config_path="setting/", config_name="setting.yaml")
 def perform_tasks(params):
     os.chdir(hydra.utils.get_original_cwd())
     OmegaConf.resolve(params)
