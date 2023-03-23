@@ -1,9 +1,8 @@
 hydra-core~=1.2.0
-nmslib~=2.1.1
 numpy~=1.22.0
 omegaconf~=2.2.2
 pandas~=1.4.3
-pytorch-lightning~=1.6.5
+pytorch-lightning==1.6.5
 pytorch-metric-learning~=1.5.2
 ranx~=0.3.6
 torch==1.13.1
