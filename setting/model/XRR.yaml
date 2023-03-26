@@ -1,11 +1,15 @@
-name: RerankerBERT
+name: XRR
 
 type: reranker
 
 encoder:
-  _target_: source.encoder.RerankerBERTEncoder.RerankerBERTEncoder
+  _target_: source.encoder.BERTEncoder.BERTEncoder
   architecture: bert-base-uncased
-  output_attentions: False
+  pooling:
+    _target_: source.pooling.NoPooling.NoPooling
+
+man:
+  _target_: source.man.MutualAttention.MutualAttention
 
 hidden_size: 768
 num_classes: 2

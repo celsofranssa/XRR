@@ -13,4 +13,10 @@ class MutualAttention(LightningModule):
         m = torch.einsum('bi,bj->bij', text_rpr, label_rpr)
         c = self.c_softmax(m)
         r = self.r_softmax(m)
-        return torch.mean(c, -1), torch.mean(r, -2)
+
+        # print(f"c({c.shape}):\n{c}\n")
+        # print(f"r({r.shape}):\n{r}\n")
+
+        a, b = torch.mean(c, -1), torch.mean(r, -2)
+
+        return a, b

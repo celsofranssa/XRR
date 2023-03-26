@@ -3,13 +3,13 @@ from typing import Any, List, Sequence, Optional
 
 import torch
 from pytorch_lightning.callbacks import BasePredictionWriter
-from torch import Tensor
 
 
-class RerankerPredictionWriter(BasePredictionWriter):
+
+class PredictionWriter(BasePredictionWriter):
 
     def __init__(self, params):
-        super(RerankerPredictionWriter, self).__init__(params.write_interval)
+        super(PredictionWriter, self).__init__(params.write_interval)
         self.params = params
         self.checkpoint_dir = f"{self.params.dir}fold_{self.params.fold_idx}/"
         Path(self.checkpoint_dir).mkdir(parents=True, exist_ok=True)

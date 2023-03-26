@@ -2,6 +2,8 @@ import pickle
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 
+from source.dataset.XRRFitDataset import XRRFitDataset
+from source.dataset.XRRPredictDataset import XRRPredictDataset
 
 
 class XRRDataModule(pl.LightningDataModule):
@@ -17,24 +19,19 @@ class XRRDataModule(pl.LightningDataModule):
         with open(f"{self.params.dir}samples.pkl", "rb") as samples_file:
             self.samples = pickle.load(samples_file)
 
-        with open(f"{self.params.dir}fold_{self.fold_idx}/pseudo_labels.pkl", "rb") as pseudo_labels_file:
-            self.pseudo_labels = pickle.load(pseudo_labels_file)
-
     def setup(self, stage=None):
 
         if stage == 'fit':
-            self.train_dataset = RerankerFitDataset(
+            self.train_dataset = XRRFitDataset(
                 samples=self.samples,
-                pseudo_labels=self.pseudo_labels,
                 ids_paths=[self.params.dir + f"fold_{self.fold_idx}/train.pkl"],
                 tokenizer=self.tokenizer,
                 text_max_length=self.params.text_max_length,
                 label_max_length=self.params.label_max_length
             )
 
-            self.val_dataset = RerankerFitDataset(
+            self.val_dataset = XRRFitDataset(
                 samples=self.samples,
-                pseudo_labels=self.pseudo_labels,
                 ids_paths=[self.params.dir + f"fold_{self.fold_idx}/val.pkl"],
                 tokenizer=self.tokenizer,
                 text_max_length=self.params.text_max_length,
@@ -42,10 +39,9 @@ class XRRDataModule(pl.LightningDataModule):
             )
 
         if stage == 'test' or stage == "predict":
-            self.predict_dataset = RerankerPredictDataset(
+            self.predict_dataset = XRRPredictDataset(
                 samples=self.samples,
                 rankings=self.ranking[self.fold_idx],
-                pseudo_labels=self.pseudo_labels,
                 tokenizer=self.tokenizer,
                 text_max_length=self.params.text_max_length,
                 label_max_length=self.params.label_max_length

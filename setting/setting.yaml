@@ -1,0 +1,45 @@
+defaults:
+  - model: AE
+  - data: MNIST
+
+tasks: ["fit"]
+
+trainer:
+  max_epochs: 5
+  gpus: 1
+  patience: 3
+  min_delta: 0.03
+  precision: 16
+  fast_dev_run: False
+  progress_bar_refresh_rate: 1
+
+log:
+  dir: resource/log/
+
+model_checkpoint:
+  dir: resource/model_checkpoint/
+
+ranking:
+  dir: resource/ranking/
+  retriever: BM25
+  name: ${ranking.retriever}_${data.name}
+
+prediction:
+  dir: resource/prediction/${model.name}_${data.name}/
+  fold_idx: 0
+  write_interval: batch
+
+
+result:
+  dir: resource/result/
+
+eval:
+  metrics: ["mrr","ndcg","precision","recall","hit_rate"]
+  thresholds: [1,5,10,100]
+  num_nearest_neighbors: 100
+  label_cls: ["all", "head", "tail"]
+  index:
+    M: 128
+    indexThreadQty: ${data.num_workers}
+    efConstruction: 256
+    post: 2

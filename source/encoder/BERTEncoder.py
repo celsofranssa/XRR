@@ -1,15 +1,13 @@
 from pytorch_lightning import LightningModule
 from transformers import BertModel
 
-class BertEncoder(LightningModule):
+class BERTEncoder(LightningModule):
     """Encodes the input as embeddings."""
 
-    def __init__(self, architecture, output_attentions, pooling):
-        super(BertEncoder, self).__init__()
+    def __init__(self, architecture, pooling):
+        super(BERTEncoder, self).__init__()
         self.encoder = BertModel.from_pretrained(
-            architecture,
-            output_attentions=output_attentions
-        )
+            architecture)
         self.pooling = pooling
 
     def forward(self, input_ids):

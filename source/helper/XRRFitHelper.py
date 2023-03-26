@@ -4,11 +4,11 @@ from pytorch_lightning import loggers, seed_everything
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping, LearningRateMonitor, TQDMProgressBar
 from transformers import AutoTokenizer
 
-from source.datamodule.RerankerDataModule import RerankerDataModule
-from source.model.RerankerModel import RerankerModel
+from source.datamodule.XRRDataModule import XRRDataModule
+from source.model.XRRModel import XRRModel
 
 
-class RerankerFitHelper:
+class XRRFitHelper:
 
     def __init__(self, params):
         self.params = params
@@ -34,14 +34,14 @@ class RerankerFitHelper:
             )
 
             # datamodule
-            datamodule = RerankerDataModule(
+            datamodule = XRRDataModule(
                 self.params.data,
                 self.get_tokenizer(self.params.model.tokenizer),
                 ranking=None,
                 fold_idx=fold_idx)
 
             # model
-            model = RerankerModel(self.params.model)
+            model = XRRModel(self.params.model)
 
             # Train the ⚡ model
             print(
@@ -60,7 +60,7 @@ class RerankerFitHelper:
 
     def get_model_checkpoint_callback(self, params, fold):
         return ModelCheckpoint(
-            monitor="val_Wei-F1",
+            monitor="val_Mic-F1",
             dirpath=params.model_checkpoint.dir,
             filename=f"{params.model.name}_{params.data.name}_{fold}",
             save_top_k=1,
@@ -71,7 +71,7 @@ class RerankerFitHelper:
 
     def get_early_stopping_callback(self, params):
         return EarlyStopping(
-            monitor='val_Wei-F1',
+            monitor='val_Mic-F1',
             patience=params.trainer.patience,
             min_delta=params.trainer.min_delta,
             mode='max'

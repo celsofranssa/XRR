@@ -3,12 +3,12 @@ from omegaconf import OmegaConf
 import pytorch_lightning as pl
 from transformers import AutoTokenizer
 
-from source.callback.RerankerPredictionWriter import RerankerPredictionWriter
-from source.datamodule.RerankerDataModule import RerankerDataModule
-from source.model.RerankerModel import RerankerModel
+from source.callback.PredictionWriter import PredictionWriter
+from source.datamodule.XRRDataModule import XRRDataModule
+from source.model.XRRModel import XRRModel
 
 
-class RerankerPredictHelper:
+class XRRPredictHelper:
 
     def __init__(self, params):
         self.params = params
@@ -16,14 +16,14 @@ class RerankerPredictHelper:
     def perform_predict(self):
         for fold_idx in self.params.data.folds:
             # data
-            dm = RerankerDataModule(
+            dm = XRRDataModule(
                 params=self.params.data,
                 tokenizer=self._get_tokenizer(),
                 ranking=self._get_ranking(),
                 fold_idx=fold_idx)
 
             # model
-            model = RerankerModel.load_from_checkpoint(
+            model = XRRModel.load_from_checkpoint(
                 checkpoint_path=f"{self.params.model_checkpoint.dir}{self.params.model.name}_{self.params.data.name}_{fold_idx}.ckpt"
             )
 
@@ -31,7 +31,7 @@ class RerankerPredictHelper:
             # trainer
             trainer = pl.Trainer(
                 gpus=self.params.trainer.gpus,
-                callbacks=[RerankerPredictionWriter(self.params.prediction)]
+                callbacks=[PredictionWriter(self.params.prediction)]
             )
 
             # predicting

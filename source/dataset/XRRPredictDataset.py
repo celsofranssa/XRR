@@ -7,16 +7,16 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 
-class RerankerPredictDataset(Dataset):
+class XRRPredictDataset(Dataset):
     """Fit Dataset.
     """
 
-    def __init__(self, samples, rankings, pseudo_labels, tokenizer, text_max_length, label_max_length):
-        super(RerankerPredictDataset, self).__init__()
+    def __init__(self, samples, rankings, tokenizer, text_max_length, label_max_length):
+        super(XRRPredictDataset, self).__init__()
         self.samples = []
-        self.pseudo_labels = pseudo_labels
         self.tokenizer = tokenizer
-        self.max_length = text_max_length + label_max_length
+        self.text_max_length = text_max_length
+        self.label_max_length = label_max_length
         texts = {}
         labels = {}
 
@@ -33,22 +33,24 @@ class RerankerPredictDataset(Dataset):
                     "text_idx": text_idx,
                     "text": texts[text_idx],
                     "label_idx": label_idx,
-                    "label": labels[label_idx] + " ".join(x[0] for x in pseudo_labels[label_idx]),
+                    "label": labels[label_idx],
                     "cls": score
                 })
 
     def _encode(self, sample):
-        features = self.tokenizer(text=sample["text"], text_pair=sample["label"], max_length=self.max_length,
-                                  padding="max_length", truncation=True)
-
-        features["input_ids"] = torch.tensor(features["input_ids"])
-        features["attention_mask"] = torch.tensor(features["attention_mask"])
-        features["token_type_ids"] = torch.tensor(features["token_type_ids"])
-        features["text_idx"] = sample["text_idx"]
-        features["label_idx"] = sample["label_idx"]
-        features["cls"] = sample["cls"]
-
-        return features
+        return {
+            "text_idx": sample["text_idx"],
+            "text": torch.tensor(
+                self.tokenizer.encode(
+                    text=sample["text"], max_length=self.text_max_length, padding="max_length", truncation=True
+                )),
+            "label_idx": sample["label_idx"],
+            "label": torch.tensor(
+                self.tokenizer.encode(
+                    text=sample["label"], max_length=self.label_max_length, padding="max_length", truncation=True
+                )),
+            "cls": sample["cls"]
+        }
 
     def __len__(self):
         return len(self.samples)

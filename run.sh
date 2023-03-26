@@ -1,11 +1,10 @@
 # activate venv and set Python path
-source ~/projects/venvs/xCoRetriv/bin/activate
-export PYTHONPATH=$PATHONPATH:~/projects/xCoRetriv/
+source ~/projects/venvs/XRR/bin/activate
+export PYTHONPATH=$PATHONPATH:~/projects/XRR/
 
 python main.py \
   tasks=[fit] \
   trainer.precision=16 \
-  model=RerankerBERT \
-  ranking.retriever=BM25 \
-  data=Amazon-670k \
+  model=XRR \
+  data=Wiki10-31k \
   data.folds=[0]

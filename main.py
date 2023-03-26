@@ -2,11 +2,11 @@ import os
 import hydra
 from omegaconf import OmegaConf
 
-from source.helper.FitHelper import FitHelper
+from source.helper.XRRFitHelper import XRRFitHelper
 
 
 def fit(params):
-    fit_helper = FitHelper(params)
+    fit_helper = XRRFitHelper(params)
     fit_helper.perform_fit()
 
 
