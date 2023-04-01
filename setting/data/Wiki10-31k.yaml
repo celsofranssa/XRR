@@ -3,8 +3,11 @@ dir: resource/dataset/Wiki10-31k/
 
 folds: [0,1,2,3,4]
 
-text_max_length: 128
-label_max_length: 128
+vocabulary_size: 50000
+padding_idx: ${data.vocabulary_size}
+window_size: 5
+text_max_lenght: 128
+label_max_lenght: 4
 
 batch_size: 64
 num_workers: 12

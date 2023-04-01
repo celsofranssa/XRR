@@ -1,6 +1,6 @@
 defaults:
-  - model: AE
-  - data: MNIST
+  - model: ULSE
+  - data: Wiki10-31k
 
 tasks: ["fit"]
 

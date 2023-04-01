@@ -3,7 +3,7 @@ from typing import Any, List, Sequence, Optional
 
 import torch
 from pytorch_lightning.callbacks import BasePredictionWriter
-
+from torch import Tensor
 
 
 class PredictionWriter(BasePredictionWriter):
@@ -24,18 +24,30 @@ class PredictionWriter(BasePredictionWriter):
     ):
         predictions = []
 
-        for text_idx, label_idx, true_cls, pred_cls in zip(
-                prediction["text_idx"].tolist(),
-                prediction["label_idx"].tolist(),
-                prediction["true_cls"].tolist(),
-                prediction["pred_cls"].tolist(),
-        ):
-            predictions.append({
-                "text_idx": text_idx,
-                "label_idx": label_idx,
-                "true_cls": true_cls,
-                "pred_cls": pred_cls,
-            })
+        # print(f"\ntext_idx ({text_idx.shape}):\n {text_idx}\n")
+        # print(f"\ntext_rpr ({text_rpr.shape}):\n {text_rpr}\n")
+        # print(f"\nlabels_ids ({torch.flatten(labels_ids).shape}):\n {torch.flatten(labels_ids)}\n")
+        # print(f"\nlabels_rpr ({labels_rpr.shape}):\n {labels_rpr}\n")
+
+        if prediction["modality"] == "text":
+            for text_idx, text_rpr in zip(
+                    prediction["text_idx"].tolist(),
+                    prediction["text_rpr"].tolist()):
+                predictions.append({
+                    "text_idx": text_idx,
+                    "text_rpr": text_rpr,
+                    "modality": "text"
+                })
+
+        elif prediction["modality"] == "label":
+            for label_idx, label_rpr in zip(
+                    prediction["label_idx"].tolist(),
+                    prediction["label_rpr"].tolist()):
+                predictions.append({
+                    "label_idx": label_idx,
+                    "label_rpr": label_rpr,
+                    "modality": "label"
+                })
 
         self._checkpoint(predictions, dataloader_idx, batch_idx)
 
