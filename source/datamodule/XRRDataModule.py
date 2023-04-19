@@ -8,11 +8,11 @@ from source.dataset.XRRPredictDataset import XRRPredictDataset
 
 class XRRDataModule(pl.LightningDataModule):
 
-    def __init__(self, params, tokenizer, ranking, fold_idx):
+    def __init__(self, params, tokenizer, rankings, fold_idx):
         super(XRRDataModule, self).__init__()
         self.params = params
         self.tokenizer = tokenizer
-        self.ranking = ranking
+        self.rankings = rankings
         self.fold_idx = fold_idx
 
     def prepare_data(self):
@@ -41,7 +41,7 @@ class XRRDataModule(pl.LightningDataModule):
         if stage == 'test' or stage == "predict":
             self.predict_dataset = XRRPredictDataset(
                 samples=self.samples,
-                rankings=self.ranking[self.fold_idx],
+                rankings=self.rankings,
                 tokenizer=self.tokenizer,
                 text_max_length=self.params.text_max_length,
                 label_max_length=self.params.label_max_length

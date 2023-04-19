@@ -9,14 +9,13 @@ from ranx import Qrels, Run, evaluate
 from tqdm import tqdm
 
 
-class RerankerEvalHelper:
+class XRREvalHelper:
     def __init__(self, params):
         self.params = params
         self.relevance_map = self._load_relevance_map()
         self.labels_cls = self._load_labels_cls()
         self.texts_cls = self._load_texts_cls()
         self.metrics = self._get_metrics()
-
 
     def _load_relevance_map(self):
         with open(f"{self.params.data.dir}relevance_map.pkl", "rb") as relevances_file:
@@ -73,10 +72,10 @@ class RerankerEvalHelper:
             for prediction in torch.load(path):
                 text_idx = prediction["text_idx"]
                 label_idx = prediction["label_idx"]
-                score = prediction["pred_cls"]
+                score = prediction["score"]
                 if f"text_{text_idx}" not in ranking:
                     ranking[f"text_{text_idx}"] = {}
-                ranking[f"text_{text_idx}"][f"label_{label_idx}"] = score + ranking[f"text_{text_idx}"].get(f"label_{label_idx}", 0.0)
+                ranking[f"text_{text_idx}"][f"label_{label_idx}"] = score
 
                 # #labels_ids[f"label_{label_idx}"] = score + labels_ids.get(f"label_{label_idx}", 0)
                 #
@@ -101,8 +100,9 @@ class RerankerEvalHelper:
 
     def perform_eval(self):
         results = []
-        rankings = []
+        rankings = {}
         for fold_idx in self.params.data.folds:
+            rankings[fold_idx] = {}
             print(
                 f"Evaluating {self.params.model.name} over {self.params.data.name} (fold {fold_idx}) with fowling "
                 f"params\n "
@@ -124,11 +124,11 @@ class RerankerEvalHelper:
                 result["cls"] = cls
 
                 results.append(result)
-                rankings.append(ranking)
+                rankings[fold_idx][cls] = cls_ranking
 
         self._checkpoint_results(results)
         print(pd.DataFrame(results))
-        # self._checkpoint_rankings(rankings)
+        self._checkpoint_rankings(rankings)
 
     def _checkpoint_results(self, results):
         """
@@ -139,9 +139,8 @@ class RerankerEvalHelper:
             self.params.result.dir + self.params.model.name + "_" + self.params.data.name + ".rts",
             sep='\t', index=False, header=True)
 
-    # def _checkpoint_rankings(self, rankings):
-    #     with open(
-    #             self.params.ranking.dir + self.params.model.name + "_" + self.params.data.name + ".rnk",
-    #             "wb") as rankings_file:
-    #         pickle.dump(rankings, rankings_file)
-
+    def _checkpoint_rankings(self, rankings):
+        with open(
+                self.params.ranking.dir + self.params.model.name + "_" + self.params.data.name + ".rnk",
+                "wb") as rankings_file:
+            pickle.dump(rankings, rankings_file)

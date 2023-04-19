@@ -37,7 +37,7 @@ class XRRFitHelper:
             datamodule = XRRDataModule(
                 self.params.data,
                 self.get_tokenizer(self.params.model.tokenizer),
-                ranking=None,
+                rankings=None,
                 fold_idx=fold_idx)
 
             # model

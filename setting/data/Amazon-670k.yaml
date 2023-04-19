@@ -3,8 +3,11 @@ dir: resource/dataset/Amazon-670k/
 
 folds: [0,1,2,3,4]
 
+vocabulary_size: 50000
+window_size: 5
 text_max_length: 128
-label_max_length: 128
+label_max_length: 64
+num_labels: 700000
 
 batch_size: 64
 num_workers: 12

@@ -10,7 +10,6 @@ from source.datamodule.ULSEDataModule import ULSEDataModule
 from source.model.ULSEModel import ULSEModel
 
 
-
 class ULSEFitHelper:
 
     def __init__(self, params):
@@ -19,7 +18,6 @@ class ULSEFitHelper:
     def perform_fit(self):
         seed_everything(707, workers=True)
         for fold_idx in self.params.data.folds:
-
             # Initialize a trainer
             trainer = pl.Trainer(
                 fast_dev_run=self.params.trainer.fast_dev_run,
@@ -42,7 +40,7 @@ class ULSEFitHelper:
                 self.params.data,
                 tokenizer=vectorizer.build_tokenizer(),
                 vocabulary=vectorizer.vocabulary_,
-                idf = dict(zip(vectorizer.get_feature_names_out(), vectorizer.idf_)),
+                idf=dict(zip(vectorizer.get_feature_names_out(), vectorizer.idf_)),
                 fold_idx=fold_idx)
 
             # model
@@ -65,21 +63,20 @@ class ULSEFitHelper:
 
     def get_model_checkpoint_callback(self, params, fold):
         return ModelCheckpoint(
-            monitor="val_Mic-F1",
+            monitor="train_loss",
             dirpath=params.model_checkpoint.dir,
             filename=f"{params.model.name}_{params.data.name}_{fold}",
             save_top_k=1,
             save_weights_only=True,
-            mode="max"
+            mode="min"
         )
-
 
     def get_early_stopping_callback(self, params):
         return EarlyStopping(
-            monitor='val_Mic-F1',
+            monitor='train_loss',
             patience=params.trainer.patience,
             min_delta=params.trainer.min_delta,
-            mode='max'
+            mode='min'
         )
 
     def get_tokenizer(self, params):
@@ -91,7 +88,6 @@ class ULSEFitHelper:
         with open(f"{self.params.data.dir}fold_{fold_id}/vectorizer.pkl", "rb") as vectorizer_file:
             return pickle.load(vectorizer_file)
 
-
     def get_lr_monitor(self):
         return LearningRateMonitor(logging_interval='step')
 
@@ -100,4 +96,3 @@ class ULSEFitHelper:
             refresh_rate=self.params.trainer.progress_bar_refresh_rate,
             process_position=0
         )
-

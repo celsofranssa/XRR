@@ -18,12 +18,16 @@ class LabelDataset(Dataset):
         self.label_max_length = label_max_length
         self._load_ids(ids_paths)
 
+        labels_map = {}
         for sample_idx in tqdm(self.ids, desc="Reading labels"):
             for label_idx, label in zip(samples[sample_idx]["labels_ids"], samples[sample_idx]["labels"]):
-                self.labels.append({
-                    "label_idx": label_idx,
-                    "label": label
-                })
+                labels_map[label_idx] = label
+
+        for label_idx, label in labels_map.items():
+            self.labels.append({
+                "label_idx": label_idx,
+                "label": label
+            })
 
     def _load_ids(self, ids_paths):
         self.ids = []

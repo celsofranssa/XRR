@@ -3,16 +3,16 @@ type: retriever
 
 encoder:
   _target_: source.encoder.EmbeddingEncoder.EmbeddingEncoder
-  vocab_size: ${data.vocab_size}
+  vocabulary_size: ${data.vocabulary_size}
   embedding_dim: 768
   rpr_dim: ${model.rpr_dim}
 
 rpr_dim: 128
-vocab_size: ${data.vocab_size}
+vocabulary_size: ${data.vocabulary_size}
 
-lr: 1e-3
-base_lr: 1e-4
-max_lr: 1e-2
+lr: 1e-2
+base_lr: 1e-3
+max_lr: 1e-1
 weight_decay: 1e-2
 
 

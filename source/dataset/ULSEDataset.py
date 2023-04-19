@@ -25,21 +25,23 @@ class ULSEDataset(Dataset):
             for i, context in enumerate(range(len(text) - window_size + 1)):
                 context = text[i: i + window_size]
                 target = context.pop(int(len(context) / 2))
-                self.samples.append({
-                    "text": " ".join(context),
-                    "labels": " ".join(samples[sample_idx]["labels"]),
-                    "cls": target
-                })
+                if target.lower() in self.vocabulary:
+                    self.samples.append({
+                        "text": " ".join(context),
+                        "labels": " ".join(samples[sample_idx]["labels"]),
+                        "cls": target
+                    })
 
             labels = self.tokenizer(" ".join(samples[sample_idx]["labels"]))
             for i, context in enumerate(range(len(labels) - window_size + 1)):
                 context = labels[i: i + window_size]
                 target = context.pop(int(len(context) / 2))
-                self.samples.append({
-                    "text": samples[sample_idx]["text"],
-                    "labels": " ".join(context),
-                    "cls": target
-                })
+                if target.lower() in self.vocabulary:
+                    self.samples.append({
+                        "text": samples[sample_idx]["text"],
+                        "labels": " ".join(context),
+                        "cls": target
+                    })
 
     def _load_ids(self, ids_paths):
         self.ids = []

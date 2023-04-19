@@ -16,28 +16,28 @@ class ULSEModel(LightningModule):
 
         # classification head
         self.cls_head = torch.nn.Sequential(
-            torch.nn.Linear(hparams.rpr_dim, hparams.vocab_size),
+            torch.nn.Linear(2 * hparams.rpr_dim, hparams.vocabulary_size+1),
             torch.nn.LogSoftmax(dim=-1)
         )
 
         # metrics
-        self.val_metrics = self._get_metrics(prefix="val_")
+        # self.val_metrics = self._get_metrics(prefix="val_")
 
         # loss function
         self.loss = torch.nn.NLLLoss()
 
-    def _get_metrics(self, prefix):
-        return MetricCollection(
-            metrics={
-                "Mic-F1": F1Score(task="binary", num_classes=self.hparams.vocab_size, average="micro"),
-                "Mac-F1": F1Score(task="binary", num_classes=self.hparams.vocab_size, average="macro"),
-            },
-            prefix=prefix)
+    # def _get_metrics(self, prefix):
+    #     return MetricCollection(
+    #         metrics={
+    #             "Mic-F1": F1Score(task="binary", num_classes=self.hparams.vocabulary_size+1, average="micro"),
+    #             "Mac-F1": F1Score(task="binary", num_classes=self.hparams.vocabulary_size+1, average="macro"),
+    #         },
+    #         prefix=prefix)
 
     def forward(self, text, labels):
         text_rpr = self.encoder(text)
         labels_rpr = self.encoder(labels)
-        rpr = 5 * text_rpr + .5 * labels_rpr
+        rpr = torch.cat([text_rpr, labels_rpr], -1)
         return self.cls_head(rpr)
 
     def training_step(self, batch, batch_idx, optimizer_idx=None):
@@ -51,13 +51,17 @@ class ULSEModel(LightningModule):
 
     def validation_step(self, batch, batch_idx):
         text, labels, true_cls = batch["text"], batch["labels"], batch["cls"]
-        pred_cls = self(text, labels)
+        # print(f"text({text.shape}):\n{text}\n")
+        # print(f"labels({labels.shape}):\n{labels}\n")
+        # print(f"cls({true_cls.shape}):\n{true_cls}\n")
+        self(text, labels)
 
         # log val metrics
-        self.log_dict(self.val_metrics(torch.argmax(pred_cls, dim=-1), true_cls), prog_bar=True)
+        # self.log_dict(self.val_metrics(torch.argmax(pred_cls, dim=-1), true_cls), prog_bar=True)
 
-    def validation_epoch_end(self, outs):
-        self.val_metrics.compute()
+    # def validation_epoch_end(self, outs):
+    #     self.val_metrics.compute()
+
 
     def predict_step(self, batch, batch_idx, dataloader_idx=None):
         if dataloader_idx == 0:

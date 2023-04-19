@@ -6,7 +6,9 @@ from source.helper.PreprocessHelper import PreprocessHelper
 from source.helper.ULSEEvalHelper import ULSEEvalHelper
 from source.helper.ULSEFitHelper import ULSEFitHelper
 from source.helper.ULSEPredictHelper import ULSEPredictHelper
+from source.helper.XRREvalHelper import XRREvalHelper
 from source.helper.XRRFitHelper import XRRFitHelper
+from source.helper.XRRPredictHelper import XRRPredictHelper
 
 
 def preprocess(params):
@@ -27,7 +29,8 @@ def fit(params):
 
 def predict(params):
     if params.model.type == "reranker":
-        pass
+        helper = XRRPredictHelper(params)
+        helper.perform_predict()
 
     elif params.model.type == "retriever":
         helper = ULSEPredictHelper(params)
@@ -35,7 +38,8 @@ def predict(params):
 
 def eval(params):
     if params.model.type == "reranker":
-        pass
+        helper = XRREvalHelper(params)
+        helper.perform_eval()
 
     elif params.model.type == "retriever":
         helper = ULSEEvalHelper(params)

@@ -5,6 +5,7 @@ export PYTHONPATH=$PATHONPATH:~/projects/XRR/
 python main.py \
   tasks=[fit] \
   trainer.precision=16 \
-  model=ULSE \
-  data=Wiki10-31k \
-  data.folds=[0]
+  model=XRR \
+  data=Amazon-670k \
+  data.batch_size=64 \
+  data.num_workers=12

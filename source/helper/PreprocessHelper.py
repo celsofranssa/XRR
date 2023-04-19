@@ -26,7 +26,7 @@ class PreprocessHelper:
 
     def get_vectorizer(self, texts):
         return TfidfVectorizer(
-            analyzer="word", max_features=self.params.data.vocabulary_size
+            analyzer="word", stop_words="english", max_features=self.params.data.vocabulary_size
         ).fit(texts)
 
     def checkpoint_vectorizer(self, vectorizer, fold_id):

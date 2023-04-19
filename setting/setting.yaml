@@ -1,6 +1,6 @@
 defaults:
-  - model: ULSE
-  - data: Wiki10-31k
+  - model: XRR
+  - data: Amazon-670k
 
 tasks: ["fit"]
 
@@ -11,7 +11,7 @@ trainer:
   min_delta: 0.03
   precision: 16
   fast_dev_run: False
-  progress_bar_refresh_rate: 1
+  progress_bar_refresh_rate: 10
 
 log:
   dir: resource/log/
@@ -21,8 +21,7 @@ model_checkpoint:
 
 ranking:
   dir: resource/ranking/
-  retriever: BM25
-  name: ${ranking.retriever}_${data.name}
+  retrievers: [APMI,ULSE]
 
 prediction:
   dir: resource/prediction/${model.name}_${data.name}/
@@ -36,7 +35,7 @@ result:
 eval:
   metrics: ["mrr","ndcg","precision","recall","hit_rate"]
   thresholds: [1,5,10,100]
-  num_nearest_neighbors: 100
+  num_nearest_neighbors: 128
   label_cls: ["all", "head", "tail"]
   index:
     M: 128

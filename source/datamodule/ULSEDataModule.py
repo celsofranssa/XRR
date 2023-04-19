@@ -29,6 +29,7 @@ class ULSEDataModule(pl.LightningDataModule):
                 ids_paths=[self.params.dir + f"fold_{self.fold_idx}/train.pkl"],
                 tokenizer=self.tokenizer,
                 vocabulary=self.vocabulary,
+                padding_idx=self.params.vocabulary_size,
                 idf=self.idf,
                 window_size=self.params.window_size,
                 text_max_length=self.params.text_max_length,
@@ -40,6 +41,7 @@ class ULSEDataModule(pl.LightningDataModule):
                 ids_paths=[self.params.dir + f"fold_{self.fold_idx}/val.pkl"],
                 tokenizer=self.tokenizer,
                 vocabulary=self.vocabulary,
+                padding_idx=self.params.vocabulary_size,
                 idf=self.idf,
                 window_size=self.params.window_size,
                 text_max_length=self.params.text_max_length,
@@ -52,6 +54,7 @@ class ULSEDataModule(pl.LightningDataModule):
                 ids_paths=[self.params.dir + f"fold_{self.fold_idx}/test.pkl"],
                 tokenizer=self.tokenizer,
                 vocabulary=self.vocabulary,
+                padding_idx=self.params.vocabulary_size,
                 text_max_length=self.params.text_max_length
             )
             self.label_dataset = LabelDataset(
@@ -59,7 +62,8 @@ class ULSEDataModule(pl.LightningDataModule):
                 ids_paths=[self.params.dir + f"fold_{self.fold_idx}/test.pkl"],
                 tokenizer=self.tokenizer,
                 vocabulary=self.vocabulary,
-                label_max_lenght=self.params.label_max_length
+                padding_idx=self.params.vocabulary_size,
+                label_max_length=self.params.label_max_length
             )
 
     def train_dataloader(self):

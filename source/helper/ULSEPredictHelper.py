@@ -21,6 +21,7 @@ class ULSEPredictHelper:
                 self.params.data,
                 tokenizer=vectorizer.build_tokenizer(),
                 vocabulary=vectorizer.vocabulary_,
+                idf=None,
                 fold_idx=fold_idx)
             # predicting
             datamodule.prepare_data()

@@ -6,14 +6,20 @@ encoder:
   _target_: source.encoder.BERTEncoder.BERTEncoder
   architecture: bert-base-uncased
   pooling:
-    _target_: source.pooling.NoPooling.NoPooling
+    _target_: source.pooling.HiddenStateAveragePooling.HiddenStateAveragePooling
 
+num_labels: ${data.num_labels}
+
+embedding_dim: ${model.hidden_size}
 man:
   _target_: source.man.MutualAttention.MutualAttention
 
 hidden_size: 768
 num_classes: 2
+
 dropout: 0.1
+dropout_1: 0.1
+dropout_2: 0.4
 
 tokenizer:
   architecture: ${model.encoder.architecture}

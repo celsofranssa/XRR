@@ -25,7 +25,7 @@ class XRRPredictDataset(Dataset):
             for label_idx, label in zip(sample["labels_ids"], sample["labels"]):
                 labels[label_idx] = label
 
-        for text_idx, labels_scores in tqdm(rankings["tail"].items(), desc="Reading ranking"):
+        for text_idx, labels_scores in tqdm(rankings["all"].items(), desc="Reading ranking"):
             text_idx = int(text_idx.split("_")[-1])
             for label_idx, score in labels_scores.items():
                 label_idx = int(label_idx.split("_")[-1])

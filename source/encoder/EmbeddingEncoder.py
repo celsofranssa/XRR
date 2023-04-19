@@ -6,7 +6,7 @@ class EmbeddingEncoder(torch.nn.Module):
     def __init__(self, vocabulary_size, embedding_dim, rpr_dim):
         super(EmbeddingEncoder, self).__init__()
         self.embeddings = nn.Embedding(
-            vocabulary_size,
+            vocabulary_size + 1,  # padding
             embedding_dim,
             padding_idx=vocabulary_size,
             scale_grad_by_freq=True
