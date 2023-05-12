@@ -65,7 +65,7 @@ class XRRPredictHelper:
                     if cls not in rankings:
                         rankings[cls] = {}
                     self.merge(rankings[cls], retriever_rankings[cls])
-        a=1
+        a = 1
         return rankings
 
     def merge(self, rankings, retriever_rankings):
@@ -79,22 +79,3 @@ class XRRPredictHelper:
                     labels_scores[label_idx] = score
 
             rankings[text_idx] = labels_scores
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

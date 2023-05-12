@@ -28,6 +28,8 @@ prediction:
   fold_idx: 0
   write_interval: batch
 
+apmi:
+  topn: 50000
 
 result:
   dir: resource/result/

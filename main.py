@@ -2,6 +2,7 @@ import os
 import hydra
 from omegaconf import OmegaConf
 
+from source.helper.APMIHelper import APMIHelper
 from source.helper.PreprocessHelper import PreprocessHelper
 from source.helper.ULSEEvalHelper import ULSEEvalHelper
 from source.helper.ULSEFitHelper import ULSEFitHelper
@@ -11,10 +12,13 @@ from source.helper.XRRFitHelper import XRRFitHelper
 from source.helper.XRRPredictHelper import XRRPredictHelper
 
 
+def apmi(params):
+    helper = APMIHelper(params)
+    helper.perform_apmi()
+
 def preprocess(params):
-    if params.model.type == "retriever":
-        helper = PreprocessHelper(params)
-        helper.perform_preprocess()
+    helper = PreprocessHelper(params)
+    helper.perform_preprocess()
 
 
 def fit(params):
@@ -50,6 +54,9 @@ def eval(params):
 def perform_tasks(params):
     os.chdir(hydra.utils.get_original_cwd())
     OmegaConf.resolve(params)
+
+    if "apmi" in params.tasks:
+        apmi(params)
 
     if "preprocess" in params.tasks:
         preprocess(params)
